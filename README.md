@@ -1,6 +1,6 @@
 # GreenChain-NPCI Blockchain README
 
-[Demo](demo/Green%20Chain%20by%20NPCI%20Demo.mp4)
+[Demo](demo/Green%20Chain%20by%20NPCI%20Demo.mp4) | [PPT](demo/Green%20chain.pdf)
 
 This repository contains scripts and configurations to set up a GreenChain-NPCI blockchain network using the Hyperledger Fabric framework. Follow the instructions below to create the network, add organizations, and deploy a chaincode.
 
