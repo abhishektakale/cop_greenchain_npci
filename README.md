@@ -1,5 +1,7 @@
 # GreenChain-NPCI Blockchain README
 
+[Demo](demo/Green%20Chain%20by%20NPCI%20Demo.mp4)
+
 This repository contains scripts and configurations to set up a GreenChain-NPCI blockchain network using the Hyperledger Fabric framework. Follow the instructions below to create the network, add organizations, and deploy a chaincode.
 
 ## Prerequisites
@@ -56,7 +58,6 @@ Run the following command to add Org4 to the network using CouchDB and certifica
 ```
 
 ### Step 5: Deploy Chaincode
-
 Return to the main network directory:
 
 ```
