@@ -18,7 +18,7 @@ Before running the commands, ensure you have the following prerequisites install
 ### Step 1: Navigate to the Test Network Directory
 
 ```
-cd cop_greenchain_npci/blockchain/test-network
+cd cop_greenchain_npci/blockchain/greenchain-network
 ```
 
 ### Step 2: Create a Channel
@@ -58,6 +58,7 @@ Run the following command to add Org4 to the network using CouchDB and certifica
 ```
 
 ### Step 5: Deploy Chaincode
+
 Return to the main network directory:
 
 ```
