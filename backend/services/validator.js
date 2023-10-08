@@ -1,3 +1,5 @@
+const winston = require('../utils/logger');
+
 const SampleToken = {
     TokenId: '1',
     ISIN: '123',
@@ -19,10 +21,8 @@ class Validator {
             if (tokenDetails.TokenId < 1) {
                 throw new Error('Token not Valid');
             }
-
         } catch (error) {
-            console.log(error);
+            winston.error(error);
         }
     }
 }
-    
