@@ -12,13 +12,21 @@ Before running the commands, ensure you have the following prerequisites install
 2. [Docker](https://docs.docker.com/get-docker/)
 3. [Docker Compose](https://docs.docker.com/compose/install/)
 4. [Git](https://git-scm.com/downloads)
+5. [NodeJS]()
+6. [Angular]()
 
 ## Instructions
+
+> Note: Run the project in following sequence:
+>
+> 1. Blockchain
+> 2. Backend
+> 3. Frontend
 
 ### Step 1: Navigate to the Test Network Directory
 
 ```
-cd cop_greenchain_npci/blockchain/greenchain-network
+cd blockchain/greenchain-network
 ```
 
 ### Step 2: Create a Channel
@@ -72,6 +80,28 @@ Deploy the chaincode (Smart Contract) on the network using the following command
 ```
 
 Make sure to customize the chaincode name (`-ccn`), chaincode path (`-ccp`), language (`-ccl`), and endorsement policy (`-ccep`) according to your specific requirements.
+
+### Step 6: Run Backend
+
+Navigate to `backend` directory:
+
+```
+cd backend
+```
+
+Install reqired modules:
+
+```
+npm i
+```
+
+Run the backend server:
+
+```
+npm run start
+```
+
+This will start backend on `localhost:3000`
 
 ## Conclusion
 
