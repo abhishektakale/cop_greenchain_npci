@@ -1,6 +1,4 @@
 class Issuer {
-    async createToken(tokenDetails ) {
-
-    }
-    async issueToken() {}
+    async createToken(tokenDetails) {}
+    async issueToken(tokenDetails) {}
 }
