@@ -1,4 +1,4 @@
 class User {
-    async tranferToken() {}
+    async tranferToken(tokenDetails) {}
     async exchangeTokens() {}
 }
