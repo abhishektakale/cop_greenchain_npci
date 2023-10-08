@@ -1,4 +1,5 @@
 var express = require('express');
+var User = require('../services/user');
 var router = express.Router();
 
 router.post('/createUser', function (req, res, next) {
