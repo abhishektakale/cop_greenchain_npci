@@ -1,9 +1,9 @@
 {
-    "name": "gbt-token-backend",
+    "name": "greenchain-backend",
     "version": "0.0.0",
     "private": true,
     "scripts": {
-        "start": "nodemon ./bin/www",
+        "start": "node ./bin/www",
         "debug": "nodemon ./bin/www"
     },
     "dependencies": {
