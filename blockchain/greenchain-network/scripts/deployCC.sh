@@ -146,10 +146,10 @@ installChaincode 1
 infoln "Install chaincode on peer0.org2..."
 installChaincode 2
 
-infoln "Install chaincode on peer0.org3..."
+infoln "Install chaincode on peer0.bank3..."
 installChaincode 3
 
-infoln "Install chaincode on peer0.org4..."
+infoln "Install chaincode on peer0.bank4..."
 installChaincode 4
 
 ## query whether the chaincode is installed
@@ -160,32 +160,32 @@ approveForMyOrg 1
 
 ## check whether the chaincode definition is ready to be committed
 ## expect org1 to have approved and org2 not to
-# checkCommitReadiness 1 "\"Org1MSP\": true" "\"Org2MSP\": false" "\"Org3MSP\": false"
-# checkCommitReadiness 2 "\"Org1MSP\": true" "\"Org2MSP\": false" "\"Org3MSP\": false"
+# checkCommitReadiness 1 "\"Org1MSP\": true" "\"Org2MSP\": false" "\"Bank3MSP\": false"
+# checkCommitReadiness 2 "\"Org1MSP\": true" "\"Org2MSP\": false" "\"Bank3MSP\": false"
 
 ## now approve also for org2
 approveForMyOrg 2
 
 ## check whether the chaincode definition is ready to be committed
 ## expect them both to have approved
-# checkCommitReadiness 1 "\"Org1MSP\": true" "\"Org2MSP\": true" "\"Org3MSP\": false"
-# checkCommitReadiness 2 "\"Org1MSP\": true" "\"Org2MSP\": true" "\"Org3MSP\": false"
+# checkCommitReadiness 1 "\"Org1MSP\": true" "\"Org2MSP\": true" "\"Bank3MSP\": false"
+# checkCommitReadiness 2 "\"Org1MSP\": true" "\"Org2MSP\": true" "\"Bank3MSP\": false"
 
-## approve the definition for org3
+## approve the definition for Bank3
 approveForMyOrg 3
 
 ## check whether the chaincode definition is ready to be committed
 ## expect org1 to have approved and org2 not to
-# checkCommitReadiness 1 "\"Org1MSP\": true" "\"Org2MSP\": true" "\"Org3MSP\": true"
-# checkCommitReadiness 2 "\"Org1MSP\": true" "\"Org2MSP\": true" "\"Org3MSP\": true"
+# checkCommitReadiness 1 "\"Org1MSP\": true" "\"Org2MSP\": true" "\"Bank3MSP\": true"
+# checkCommitReadiness 2 "\"Org1MSP\": true" "\"Org2MSP\": true" "\"Bank3MSP\": true"
 
-## approve the definition for org3
+## approve the definition for Bank3
 approveForMyOrg 4
 
 ## check whether the chaincode definition is ready to be committed
 ## expect org1 to have approved and org2 not to
-# checkCommitReadiness 1 "\"Org1MSP\": true" "\"Org2MSP\": true" "\"Org3MSP\": true"
-# checkCommitReadiness 2 "\"Org1MSP\": true" "\"Org2MSP\": true" "\"Org3MSP\": true"
+# checkCommitReadiness 1 "\"Org1MSP\": true" "\"Org2MSP\": true" "\"Bank3MSP\": true"
+# checkCommitReadiness 2 "\"Org1MSP\": true" "\"Org2MSP\": true" "\"Bank3MSP\": true"
 
 ## now that we know for sure both orgs have approved, commit the definition
 commitChaincodeDefinition 1 2 3 4

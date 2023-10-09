@@ -42,10 +42,10 @@ exports.buildCCPOrg2 = () => {
 	return ccp;
 };
 
-exports.buildCCPOrg3 = () => {
+exports.buildCCPBank3 = () => {
 	// load the common connection configuration file
 	const ccpPath = path.resolve(__dirname, '..', '..','..', 'blockchain','greenchain-network',
-		'organizations', 'peerOrganizations', 'org3.example.com', 'connection-org3.json');
+		'organizations', 'peerOrganizations', 'bank3.example.com', 'connection-bank3.json');
 	const fileExists = fs.existsSync(ccpPath);
 	if (!fileExists) {
 		throw new Error(`no such file or directory: ${ccpPath}`);
@@ -59,10 +59,10 @@ exports.buildCCPOrg3 = () => {
 	return ccp;
 };
 
-exports.buildCCPOrg4 = () => {
+exports.buildCCPBank4 = () => {
 	// load the common connection configuration file
 	const ccpPath = path.resolve(__dirname, '..', '..','..', 'blockchain','greenchain-network',
-		'organizations', 'peerOrganizations', 'org4.example.com', 'connection-org4.json');
+		'organizations', 'peerOrganizations', 'bank4.example.com', 'connection-bank4.json');
 	const fileExists = fs.existsSync(ccpPath);
 	if (!fileExists) {
 		throw new Error(`no such file or directory: ${ccpPath}`);
