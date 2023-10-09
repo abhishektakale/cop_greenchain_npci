@@ -6,6 +6,7 @@ import { Data } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { URLS } from '../urls';
 import { CommonServiceService } from '../service/common-service.service';
+import { ApiService } from '../service/api.service';
 
 @Component({
   selector: 'app-asset-dialog',
@@ -29,7 +30,7 @@ export class AssetDialogComponent implements OnInit {
   httpOptions: any;
   data:any;
   constructor(public dialogRef: MatDialogRef<any, any>,
-    @Inject(MAT_DIALOG_DATA) public dialogdata: Data, private snackBar: MatSnackBar, private _http: HttpClient, public commonService: CommonServiceService) {
+    @Inject(MAT_DIALOG_DATA) public dialogdata: Data, private snackBar: MatSnackBar, private _http: HttpClient, public commonService: CommonServiceService, private apiService: ApiService) {
     console.log(dialogdata);
     this.data=dialogdata;
     if (dialogdata) {
@@ -57,6 +58,12 @@ export class AssetDialogComponent implements OnInit {
 
       })
     }
+
+    this.apiService.createIssuerAsset(this.form.value).subscribe(response => {
+      console.log("Create User ==> ", response);
+    }, (error) => {
+      console.log("Error in create issuer asset API ", error);
+    })
    
   }
   close() {

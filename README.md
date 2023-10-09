@@ -76,7 +76,7 @@ cd ..
 Deploy the chaincode (Smart Contract) on the network using the following command. Replace the necessary parameters such as chaincode name, chaincode path, language, and endorsing peers' endorsement policy as needed:
 
 ```
-./network.sh deployCC -ccn basic -ccp ../chaincode -ccl go -ccep "OR('Org1MSP.peer','Org2MSP.peer','Org3MSP.peer','Org4MSP.peer')"
+./network.sh deployCC -ccn basic -ccp ../chaincode -ccl go -ccep "OR('Org1MSP.peer','Org2MSP.peer','Bank3MSP.peer','Bank4MSP.peer')"
 ```
 
 Make sure to customize the chaincode name (`-ccn`), chaincode path (`-ccp`), language (`-ccl`), and endorsement policy (`-ccep`) according to your specific requirements.
@@ -111,4 +111,4 @@ This will start backend on `localhost:3000`
 
 ## Conclusion
 
-You have successfully set up the GreenChain-NPCI blockchain network, added Org3 and Org4, and deployed a chaincode. Feel free to explore and modify the network and chaincode as needed for your application. For more information, consult the Hyperledger Fabric documentation for further customization and usage guidelines.
+You have successfully set up the GreenChain-NPCI blockchain network, added Bank3 and Bank4, and deployed a chaincode. Feel free to explore and modify the network and chaincode as needed for your application. For more information, consult the Hyperledger Fabric documentation for further customization and usage guidelines.

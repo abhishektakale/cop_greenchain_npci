@@ -21,6 +21,8 @@ import { IssuanceComponent } from './issuance/issuance.component';
 import {MatSelectModule} from '@angular/material/select';
 import { TradeComponent } from './trade/trade.component';
 import { HomeComponent } from './home/home.component';
+import { LoginComponent } from './login/login.component';
+import { MatCardModule } from '@angular/material/card';
 
 @NgModule({
   declarations: [
@@ -28,12 +30,13 @@ import { HomeComponent } from './home/home.component';
     AssetDialogComponent,
     IssuanceComponent,
     TradeComponent,
-    HomeComponent
+    HomeComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule, MatDatepickerModule, MatNativeDateModule, MatSelectModule,
     AppRoutingModule, HttpClientModule, BrowserAnimationsModule, MatTableModule,MatInputModule,MatButtonModule,MatPaginatorModule,
-    MatDialogModule,FormsModule, ReactiveFormsModule,MatSnackBarModule,MatIconModule,MatToolbarModule
+    MatDialogModule,FormsModule, ReactiveFormsModule,MatSnackBarModule,MatIconModule,MatToolbarModule, MatCardModule
   ],
   providers: [],
   bootstrap: [AppComponent]

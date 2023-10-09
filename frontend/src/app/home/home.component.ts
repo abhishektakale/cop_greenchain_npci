@@ -9,6 +9,7 @@ import { AssetDialogComponent } from '../asset-dialog/asset-dialog.component';
 import { URLS } from '../urls';
 import { Router } from '@angular/router';
 import { CommonServiceService } from '../service/common-service.service';
+import { ApiService } from '../service/api.service';
 
 @Component({
   selector: 'app-home',
@@ -24,7 +25,7 @@ export class HomeComponent {
     assets = [];
     dummyData = [];
     displayedColumns: String[] = ["position", "requestId",'createdOn','lastUpdatedOn','assetType',"securityType" ,'securityName','quantity','status','isin'];
-  constructor(private _http: HttpClient, private dialog: MatDialog,private snackBar:MatSnackBar, private router: Router, public commonService: CommonServiceService) {
+  constructor(private _http: HttpClient, private dialog: MatDialog,private snackBar:MatSnackBar, private router: Router, public commonService: CommonServiceService, private apiService: ApiService) {
     this.httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
@@ -38,7 +39,8 @@ export class HomeComponent {
 
   }
   ngOnInit() {
-    this.commonService.tab = 'issuer'
+    this.commonService.tab = 'issuer';
+    this.getAsset();
  }
   editRow(asset:any,index:number){
     const dialogRef = this.dialog.open(AssetDialogComponent, {
@@ -74,6 +76,7 @@ export class HomeComponent {
         this.dataSource._updateChangeSubscription();
       }
       if(this.commonService.tab === 'issuer') {
+        this.apiService.getAsset();
         this.dataSource.data.push({
           requestId: 'REQ_CRE_GB_001',
           createdOn: 'October 06, 2023',
@@ -145,5 +148,15 @@ export class HomeComponent {
     let index = this.displayedColumns.indexOf('quantity');
     if(index > -1)
       this.displayedColumns[index] = 'requestType';
+  }
+
+  getAsset() {
+    let organization = 'ABC';
+    let tokenId = 'T001';
+    this.apiService.getAsset(organization, tokenId).subscribe(response => {
+      console.log("Get Asset ===> ",response);
+    }, (error) => {
+      console.log('Error in Get Asset API ', error)
+    })
   }
 }

@@ -8,6 +8,7 @@ const {
 } = require('../application-files/javascript/CAUtil.js');
 const { buildCCPOrg1, buildWallet } = require('../application-files/javascript/AppUtil.js');
 const winston = require('../utils/logger.js');
+const { json } = require('body-parser');
 
 const channelName = 'mychannel';
 const chaincodeName = 'basic';
@@ -41,7 +42,7 @@ module.exports = class Issuer {
         // In a real application this would be done as the backend server session is setup for
         // a user that has been verified.
         const gateway = new Gateway();
-
+        var result;
         try {
             // setup the gateway instance
             // The user will now be able to create connections to the fabric network and be able to
@@ -67,7 +68,7 @@ module.exports = class Issuer {
                 '\n--> Submit Transaction: CreateToken, function creates the token on the ledger'
             );
 
-            await contract.submitTransaction(
+            result = await contract.submitTransaction(
                 'CreateToken',
                 tokenDetails.ISIN,
                 tokenDetails.ExpiryTime,
@@ -86,6 +87,8 @@ module.exports = class Issuer {
             // This will close all connections to the network
             gateway.disconnect();
         }
+
+        return JSON.parse(result.toString());
     }
 
     async issueToken(tokenDetails,orgName) {
@@ -146,5 +149,7 @@ module.exports = class Issuer {
             // This will close all connections to the network
             gateway.disconnect();
         }
+
+        return JSON.parse(result.toString());
     }
 };
