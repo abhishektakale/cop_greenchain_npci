@@ -1,0 +1,32 @@
+<div class="wrap-login">
+    <div class="container">
+        <form class="" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+            <mat-card class="login-box">
+                <mat-card-header>
+                    <img mat-card-avatar src="assets/NPCI_Logo.png" alt="Logo">
+                </mat-card-header>
+                <mat-card-content>
+                    <mat-form-field appearance="outline">
+                        <mat-label>User ID</mat-label>
+                        <input matInput type="text" placeholder="Enter your User ID" formControlName="userId" required class="form-field">
+                        <mat-error *ngIf="loginForm.get('userId')?.hasError('required')">User ID is required</mat-error>
+                    </mat-form-field>
+                
+                    <mat-form-field appearance="outline">
+                        <mat-label>Organization</mat-label>
+                        <mat-select formControlName="organization" matNativeControl required>
+                            <mat-option value="govt">Govt. Of India</mat-option>
+                            <mat-option value="npci">NPCI</mat-option>
+                            <mat-option value="reliance">Reliance</mat-option>
+                            <mat-option value="adani">Adani</mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="loginForm.get('organization')?.hasError('required')">Organization is required</mat-error>
+                    </mat-form-field>
+                </mat-card-content>
+                <mat-card-actions>
+                    <button mat-raised-button color="primary">Login</button>
+                </mat-card-actions>
+            </mat-card>
+        </form>
+    </div>
+</div>
