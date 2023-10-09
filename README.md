@@ -95,6 +95,12 @@ Install reqired modules:
 npm i
 ```
 
+Enroll the admin user for each org:
+
+```
+node enrollAdmin.js
+```
+
 Run the backend server:
 
 ```

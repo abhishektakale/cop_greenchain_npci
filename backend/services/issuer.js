@@ -10,7 +10,7 @@ const { buildCCPOrg1, buildWallet } = require('../application-files/javascript/A
 const winston = require('../utils/logger.js');
 
 const channelName = 'mychannel';
-const chaincodeName = 'basicFour';
+const chaincodeName = 'basic';
 const mspOrg1 = 'Org1MSP';
 const walletPath = __dirname;
 const org1UserId = 'appUser';
