@@ -1,7 +1,6 @@
 package chaincode
 
 import (
-	"crypto/sha256"
 	"encoding/json"
 	"fmt"
 
@@ -45,9 +44,15 @@ const (
 	CARBON          = 1
 )
 
+const GOI_MSP = "GOIMSP"
+const NPCI_MSP = "NPCIMSP"
+const SBI_MSP = "SBIMSP"
+const HDFC_MSP = "HDFCMSP"
+
 type UserWallet struct {
 	Bonds         BondType
 	WalletBalance int
+	OrgName       string
 }
 
 // InitLedger adds a base set of assets to the ledger
@@ -83,41 +88,64 @@ func (s *SmartContract) CreateUser(ctx contractapi.TransactionContextInterface, 
 		return err
 	}
 	if exists {
-		return fmt.Errorf("the token %s already exists", string(userID))
+		return fmt.Errorf("the user %s already exists", userID)
+	}
+
+	mspID, _ := ctx.GetClientIdentity().GetMSPID()
+
+	if mspID == "Org1MSP" {
+		mspID = GOI_MSP
+	} else if mspID == "Org2MSP" {
+		mspID = NPCI_MSP
+	} else if mspID == "Bank3MSP" {
+		mspID = SBI_MSP
+	} else if mspID == "Bank4MSP" {
+		mspID = HDFC_MSP
+	} else {
+		return fmt.Errorf("invalid Org...")
 	}
 
 	asset := UserWallet{
 		Bonds:         0, //Green Bonds
 		WalletBalance: 0,
+		OrgName:       mspID,
 	}
+
+	// fmt.Println("User ID : ", asset)
 
 	assetJSON, err := json.Marshal(asset)
 	if err != nil {
 		return err
 	}
 
+	// fmt.Println("Marshal : ", assetJSON)
+	// fmt.Println("JSON : ", string(assetJSON))
+
 	return ctx.GetStub().PutState(userID, assetJSON)
 }
 
-func HashData(
-	receivedData interface{},
-) ([]byte, error) {
+// func HashData(
+// 	receivedData interface{},
+// ) ([]byte, error) {
 
-	// verify private data hash
-	receivedDataStr, err := json.Marshal(receivedData)
-	if err != nil {
-		return nil, fmt.Errorf("error while marshalling received Data, %w", err)
-	}
+// 	// verify private data hash
+// 	receivedDataStr, err := json.Marshal(receivedData)
+// 	if err != nil {
+// 		return nil, fmt.Errorf("error while marshalling received Data, %w", err)
+// 	}
 
-	receivedDataHash := sha256.Sum256(receivedDataStr)
+// 	receivedDataHash := sha256.Sum256(receivedDataStr)
 
-	return receivedDataHash[:], nil
-}
+// 	return receivedDataHash[:], nil
+// }
 
 // CreateAsset issues a new asset to the world state with given details.
 func (s *SmartContract) CreateToken(ctx contractapi.TransactionContextInterface, isin string, expiry int, securityType string, securityName string, issuerAddress string, createTimestamp int, updatedTimestamp int, status string, ownerAddress string, faceValue int) (string, error) {
 
-	// tokenId, err := HashData(isin + "_" + string(createTimestamp))
+	// Check transaction proposal is received from Govt. Of India Org
+	if mspID, _ := ctx.GetClientIdentity().GetMSPID(); mspID != "Org1MSP" {
+		return "Token can only be created by Govt. Of India Org.", fmt.Errorf("Unauthorized Call! Token can only be created by Govt. Of India Org.")
+	}
 
 	// tokenId = string(tokenId)
 	exists, err := s.ValidateToken(ctx, isin)
@@ -142,30 +170,21 @@ func (s *SmartContract) CreateToken(ctx contractapi.TransactionContextInterface,
 		FaceValue:        faceValue,
 	}
 
-	fmt.Println("Error One -----------")
-
 	assetJSON, err := json.Marshal(asset)
 	if err != nil {
 		return "", err
 	}
-
-	fmt.Println("Error Two -----------")
 
 	issuerJson, err := ctx.GetStub().GetState(issuerAddress)
 	if err != nil {
 		return "", nil
 	}
 
-	fmt.Println(string(issuerJson))
-	fmt.Println("Error Three -----------")
-
 	var issuer UserWallet
 	err = json.Unmarshal(issuerJson, &issuer)
 	if err != nil {
 		return "", err
 	}
-
-	fmt.Println("Error Four -----------")
 
 	issuer.WalletBalance = issuer.WalletBalance + 1
 
@@ -174,8 +193,6 @@ func (s *SmartContract) CreateToken(ctx contractapi.TransactionContextInterface,
 		return "", err
 	}
 
-	fmt.Println("Error Five -----------")
-
 	ctx.GetStub().PutState(issuerAddress, issuerJson)
 
 	return string(isin), ctx.GetStub().PutState(isin, assetJSON)
@@ -183,12 +200,33 @@ func (s *SmartContract) CreateToken(ctx contractapi.TransactionContextInterface,
 
 func (s *SmartContract) IssueToken(ctx contractapi.TransactionContextInterface, tokenId string, ownerAddress string) error {
 
+	// Check transaction proposal is received from Govt. Of India Org
+	if mspID, _ := ctx.GetClientIdentity().GetMSPID(); mspID != "Org1MSP" {
+		return fmt.Errorf("Unauthorized Call! Token can only be created by Govt. Of India Org.")
+	}
+
+	ownerJson, err := ctx.GetStub().GetState(ownerAddress)
+	if err != nil {
+		return nil
+	}
+
+	var owner UserWallet
+	err = json.Unmarshal(ownerJson, &owner)
+	if err != nil {
+		return err
+	}
+
+	// Check transaction token is not issued to NPCI Org or GOI Org
+	if NPCI_MSP == owner.OrgName || GOI_MSP == owner.OrgName {
+		return fmt.Errorf("Unauthorized Call! Token cannot be issued to NPCI Org or GOI Org.")
+	}
+
 	assetJSON, err := ctx.GetStub().GetState(tokenId)
 	if err != nil {
 		return fmt.Errorf("failed to read from world state: %v", err)
 	}
 	if assetJSON == nil {
-		return fmt.Errorf("the asset %s does not exist", tokenId)
+		return fmt.Errorf("the token %s does not exist", tokenId)
 	}
 
 	var asset Token
@@ -204,16 +242,16 @@ func (s *SmartContract) IssueToken(ctx contractapi.TransactionContextInterface, 
 		return err
 	}
 
-	ownerJson, err := ctx.GetStub().GetState(ownerAddress)
-	if err != nil {
-		return nil
-	}
+	// ownerJson, err := ctx.GetStub().GetState(ownerAddress)
+	// if err != nil {
+	// 	return nil
+	// }
 
-	var owner UserWallet
-	err = json.Unmarshal(ownerJson, &owner)
-	if err != nil {
-		return err
-	}
+	// var owner UserWallet
+	// err = json.Unmarshal(ownerJson, &owner)
+	// if err != nil {
+	// 	return err
+	// }
 
 	owner.WalletBalance = owner.WalletBalance + 1
 
@@ -249,6 +287,27 @@ func (s *SmartContract) IssueToken(ctx contractapi.TransactionContextInterface, 
 
 func (s *SmartContract) TransferToken(ctx contractapi.TransactionContextInterface, tokenId string, receiverAddress string, bondmarketValue int) error {
 
+	// Check transaction proposal is received from Govt. Of India Org
+	if mspID, _ := ctx.GetClientIdentity().GetMSPID(); mspID == "Org2MSP" || mspID == "Org1MSP" {
+		return fmt.Errorf("Unauthorized Call! Token cannot be transfered from Givt. of India Org or NPCI Org.")
+	}
+
+	newOwnerJson, err := ctx.GetStub().GetState(receiverAddress)
+	if err != nil {
+		return err
+	}
+
+	var newOwner UserWallet
+	err = json.Unmarshal(newOwnerJson, &newOwner)
+	if err != nil {
+		return err
+	}
+
+	// Check transaction token is not transfered to NPCI Org or GOI Org
+	if NPCI_MSP == newOwner.OrgName || GOI_MSP == newOwner.OrgName {
+		return fmt.Errorf("Unauthorized Call! Token cannot be transfered to NPCI Org or GOI Org.")
+	}
+
 	exists, err := s.ValidateUser(ctx, receiverAddress)
 	if err != nil {
 		return err
@@ -262,7 +321,7 @@ func (s *SmartContract) TransferToken(ctx contractapi.TransactionContextInterfac
 		return fmt.Errorf("failed to read from world state: %v", err)
 	}
 	if assetJSON == nil {
-		return fmt.Errorf("the asset %s does not exist", tokenId)
+		return fmt.Errorf("the token %s does not exist", tokenId)
 	}
 
 	var asset Token
@@ -294,17 +353,6 @@ func (s *SmartContract) TransferToken(ctx contractapi.TransactionContextInterfac
 	asset.OwnerAddress = receiverAddress
 
 	assetJSON, err = json.Marshal(asset)
-	if err != nil {
-		return err
-	}
-
-	newOwnerJson, err := ctx.GetStub().GetState(receiverAddress)
-	if err != nil {
-		return err
-	}
-
-	var newOwner UserWallet
-	err = json.Unmarshal(newOwnerJson, &newOwner)
 	if err != nil {
 		return err
 	}
@@ -429,6 +477,9 @@ func (s *SmartContract) ViewToken(ctx contractapi.TransactionContextInterface, t
 	if err != nil {
 		return asset, fmt.Errorf("failed to read from world state: %v", err)
 	}
+	if assetJSON == nil {
+		return asset, fmt.Errorf("Token %s does not exists", tokenId)
+	}
 
 	err = json.Unmarshal(assetJSON, &asset)
 	if err != nil {
@@ -444,6 +495,9 @@ func (s *SmartContract) ViewUser(ctx contractapi.TransactionContextInterface, us
 	assetJSON, err := ctx.GetStub().GetState(userId)
 	if err != nil {
 		return asset, fmt.Errorf("failed to read from world state: %v", err)
+	}
+	if assetJSON == nil {
+		return asset, fmt.Errorf("User %s does not exists", userId)
 	}
 
 	err = json.Unmarshal(assetJSON, &asset)

@@ -1,0 +1,45 @@
+{
+    "name": "greenchain-network-bank${ORG}",
+    "version": "1.0.0",
+    "client": {
+        "organization": "Bank${ORG}",
+        "connection": {
+            "timeout": {
+                "peer": {
+                    "endorser": "300"
+                }
+            }
+        }
+    },
+    "organizations": {
+        "Bank${ORG}": {
+            "mspid": "Bank${ORG}MSP",
+            "peers": ["peer0.bank${ORG}.example.com"],
+            "certificateAuthorities": ["ca.bank${ORG}.example.com"]
+        }
+    },
+    "peers": {
+        "peer0.bank${ORG}.example.com": {
+            "url": "grpcs://localhost:${P0PORT}",
+            "tlsCACerts": {
+                "pem": "${PEERPEM}"
+            },
+            "grpcOptions": {
+                "ssl-target-name-override": "peer0.bank${ORG}.example.com",
+                "hostnameOverride": "peer0.bank${ORG}.example.com"
+            }
+        }
+    },
+    "certificateAuthorities": {
+        "ca.bank${ORG}.example.com": {
+            "url": "https://localhost:${CAPORT}",
+            "caName": "ca-bank${ORG}",
+            "tlsCACerts": {
+                "pem": "${CAPEM}"
+            },
+            "httpOptions": {
+                "verify": false
+            }
+        }
+    }
+}
