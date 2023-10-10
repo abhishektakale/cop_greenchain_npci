@@ -53,6 +53,7 @@ type UserWallet struct {
 	Bonds         BondType
 	WalletBalance int
 	OrgName       string
+	UserName      string
 }
 
 // InitLedger adds a base set of assets to the ledger
@@ -109,6 +110,7 @@ func (s *SmartContract) CreateUser(ctx contractapi.TransactionContextInterface, 
 		Bonds:         0, //Green Bonds
 		WalletBalance: 0,
 		OrgName:       mspID,
+		UserName:      userID,
 	}
 
 	// fmt.Println("User ID : ", asset)
@@ -489,6 +491,31 @@ func (s *SmartContract) ViewToken(ctx contractapi.TransactionContextInterface, t
 	return asset, nil
 }
 
+func (s *SmartContract) GetAllTokens(ctx contractapi.TransactionContextInterface, ownerAddress string) ([]*Token, error) {
+
+	resultsIterator, err := ctx.GetStub().GetStateByRange("", "")
+	if err != nil {
+		return nil, err
+	}
+	defer resultsIterator.Close()
+
+	var assets []*Token
+	for resultsIterator.HasNext() {
+		queryResponse, err := resultsIterator.Next()
+		if err != nil {
+			return nil, err
+		}
+
+		var asset Token
+		err = json.Unmarshal(queryResponse.Value, &asset)
+		if asset.OwnerAddress == ownerAddress {
+			assets = append(assets, &asset)
+		}
+	}
+
+	return assets, nil
+}
+
 func (s *SmartContract) ViewUser(ctx contractapi.TransactionContextInterface, userId string) (UserWallet, error) {
 
 	var asset UserWallet
@@ -506,6 +533,31 @@ func (s *SmartContract) ViewUser(ctx contractapi.TransactionContextInterface, us
 	}
 
 	return asset, nil
+}
+
+func (s *SmartContract) GetAllUsers(ctx contractapi.TransactionContextInterface) ([]*UserWallet, error) {
+
+	resultsIterator, err := ctx.GetStub().GetStateByRange("", "")
+	if err != nil {
+		return nil, err
+	}
+	defer resultsIterator.Close()
+
+	var assets []*UserWallet
+	for resultsIterator.HasNext() {
+		queryResponse, err := resultsIterator.Next()
+		if err != nil {
+			return nil, err
+		}
+
+		var asset UserWallet
+		err = json.Unmarshal(queryResponse.Value, &asset)
+		if asset.OrgName != "" {
+			assets = append(assets, &asset)
+		}
+	}
+
+	return assets, nil
 }
 
 // TransferAsset updates the owner field of asset with given id in world state, and returns the old owner.

@@ -20,6 +20,17 @@ router.get('/viewToken/:orgName/:tokenId', function (req, res, next) {
     res.sendPromise(userService.viewToken(tokenId, orgName));
 });
 
+router.get('/viewAllTokensForUser/:userId', function (req, res, next) {
+    const userService = new User();
+    const { userId } = req.params;
+    res.send(userService.viewAllTokensForUser(userId));
+});
+
+router.get('/viewAllUsers', function (req, res, next) {
+    const userService = new User();
+    res.send(userService.viewAllUsers());
+});
+
 router.post('/transferToken', function (req, res, next) {
     const userService = new User();
     const { tokenDetails, orgName } = req.body;

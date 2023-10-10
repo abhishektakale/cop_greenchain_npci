@@ -21,18 +21,14 @@ function prettyJSONString(inputString) {
 
 module.exports = class User {
     async createUser(userId, orgName) {
-        const ccp = require('../application-files/javascript/AppUtil.js')[`buildCCP${orgName}`]();
+        const ccp = require('../application-files/javascript/AppUtil.js')[`buildCCP${orgName}`]()
 
         // build an instance of the fabric ca services client based on
         // the information in the network configuration
-        const caClient = buildCAClient(
-            FabricCAServices,
-            ccp,
-            'ca.' + orgName.toLowerCase() + '.example.com'
-        );
+        const caClient = buildCAClient(FabricCAServices, ccp, 'ca.'+ orgName.toLowerCase() +'.example.com');
 
         // setup the wallet to hold the credentials of the application user
-        const wallet = await buildWallet(Wallets, path.join(walletPath, '../', 'wallets', orgName));
+        const wallet = await buildWallet(Wallets,path.join(walletPath,'../','wallets' ,orgName));
 
         // in a real application this would be done on an administrative flow, and only once
         // await enrollAdmin(caClient, wallet, mspOrg1);
@@ -45,8 +41,7 @@ module.exports = class User {
         // In a real application this would be done as the backend server session is setup for
         // a user that has been verified.
         const gateway = new Gateway();
-
-        var result;
+        var result
         try {
             // setup the gateway instance
             // The user will now be able to create connections to the fabric network and be able to
@@ -71,29 +66,28 @@ module.exports = class User {
             winston.debug(
                 '\n--> Submit Transaction: CreateUser, function creates new users on the ledger'
             );
-            result = await contract.submitTransaction('CreateUser', userId);
+            await contract.submitTransaction('CreateUser', userId);
             winston.debug('*** Result: committed');
+        }catch(error){
+            return false
         } finally {
             // Disconnect from the gateway when the application is closing
             // This will close all connections to the network
             gateway.disconnect();
+            // return "User Created Successfully!"
         }
-        return JSON.parse(result.toString());
+        return true
     }
 
-    async viewUser(userId, orgName) {
-        const ccp = require('../application-files/javascript/AppUtil.js')[`buildCCP${orgName}`]();
+    async viewUser(userId,orgName) {
+        const ccp = require('../application-files/javascript/AppUtil.js')[`buildCCP${orgName}`]()
 
         // build an instance of the fabric ca services client based on
         // the information in the network configuration
-        const caClient = buildCAClient(
-            FabricCAServices,
-            ccp,
-            'ca.' + orgName.toLowerCase() + '.example.com'
-        );
+        const caClient = buildCAClient(FabricCAServices, ccp, 'ca.'+ orgName.toLowerCase() +'.example.com');
 
         // setup the wallet to hold the credentials of the application user
-        const wallet = await buildWallet(Wallets, path.join(walletPath, '../', 'wallets', orgName));
+        const wallet = await buildWallet(Wallets, path.join(walletPath,'../','wallets' ,orgName));
 
         // in a real application this would be done on an administrative flow, and only once
         // await enrollAdmin(caClient, wallet, mspOrg1);
@@ -106,7 +100,7 @@ module.exports = class User {
         // In a real application this would be done as the backend server session is setup for
         // a user that has been verified.
         const gateway = new Gateway();
-        var result;
+        var result
         try {
             // setup the gateway instance
             // The user will now be able to create connections to the fabric network and be able to
@@ -128,30 +122,31 @@ module.exports = class User {
             // This type of transaction would only be run once by an application the first time it was started after it
             // deployed the first time. Any updates to the chaincode deployed later would likely not need to run
             // an "init" type function.
-            winston.debug('\n--> Evaluate Transaction: ViewUser, function views users on Ledger');
+            winston.debug(
+                '\n--> Evaluate Transaction: ViewUser, function views users on Ledger'
+            );
             result = await contract.evaluateTransaction('ViewUser', userId);
-            winston.debug('*** Result: ', result.toString());
+            winston.debug('*** Result: '+ result.toString());
         } finally {
             // Disconnect from the gateway when the application is closing
             // This will close all connections to the network
             gateway.disconnect();
         }
-        return JSON.parse(result.toString());
+        return result
     }
 
-    async viewToken(tokenId, orgName) {
-        const ccp = require('../application-files/javascript/AppUtil.js')[`buildCCP${orgName}`]();
+    async viewAllUsers(){
+
+        var orgName = "Org1"
+
+        const ccp = require('../application-files/javascript/AppUtil.js')[`buildCCP${orgName}`]()
 
         // build an instance of the fabric ca services client based on
         // the information in the network configuration
-        const caClient = buildCAClient(
-            FabricCAServices,
-            ccp,
-            'ca.' + orgName.toLowerCase() + '.example.com'
-        );
+        const caClient = buildCAClient(FabricCAServices, ccp, 'ca.'+ orgName.toLowerCase() +'.example.com');
 
         // setup the wallet to hold the credentials of the application user
-        const wallet = await buildWallet(Wallets, path.join(walletPath, '../', 'wallets', orgName));
+        const wallet = await buildWallet(Wallets, path.join(walletPath,'../','wallets' ,orgName));
 
         // in a real application this would be done on an administrative flow, and only once
         // await enrollAdmin(caClient, wallet, mspOrg1);
@@ -164,7 +159,7 @@ module.exports = class User {
         // In a real application this would be done as the backend server session is setup for
         // a user that has been verified.
         const gateway = new Gateway();
-        var result;
+
         try {
             // setup the gateway instance
             // The user will now be able to create connections to the fabric network and be able to
@@ -172,7 +167,7 @@ module.exports = class User {
             // signed by this user using the credentials stored in the wallet.
             await gateway.connect(ccp, {
                 wallet,
-                identity: 'admin',
+                identity: "admin",
                 discovery: { enabled: true, asLocalhost: true } // using asLocalhost as this gateway is using a fabric network deployed locally
             });
 
@@ -189,29 +184,25 @@ module.exports = class User {
             winston.debug(
                 '\n--> Evaluate Transaction: ViewToken, function views token on the ledger'
             );
-            result = await contract.evaluateTransaction('ViewToken', tokenId);
-            winston.debug('*** Result: ', result.toString());
+            var result = await contract.evaluateTransaction('GetAllUsers');
+            winston.debug('*** Result: '+ result.toString());
         } finally {
             // Disconnect from the gateway when the application is closing
             // This will close all connections to the network
             gateway.disconnect();
         }
-        return JSON.parse(result.toString());
+
     }
 
-    async tranferToken(tokenDetails, orgName) {
-        const ccp = require('../application-files/javascript/AppUtil.js')[`buildCCP${orgName}`]();
+    async viewToken(tokenId,orgName) {
+        const ccp = require('../application-files/javascript/AppUtil.js')[`buildCCP${orgName}`]()
 
         // build an instance of the fabric ca services client based on
         // the information in the network configuration
-        const caClient = buildCAClient(
-            FabricCAServices,
-            ccp,
-            'ca.' + orgName.toLowerCase() + '.example.com'
-        );
+        const caClient = buildCAClient(FabricCAServices, ccp, 'ca.'+ orgName.toLowerCase() +'.example.com');
 
         // setup the wallet to hold the credentials of the application user
-        const wallet = await buildWallet(Wallets, path.join(walletPath, '../', 'wallets', orgName));
+        const wallet = await buildWallet(Wallets, path.join(walletPath,'../','wallets' ,orgName));
 
         // in a real application this would be done on an administrative flow, and only once
         // await enrollAdmin(caClient, wallet, mspOrg1);
@@ -224,7 +215,7 @@ module.exports = class User {
         // In a real application this would be done as the backend server session is setup for
         // a user that has been verified.
         const gateway = new Gateway();
-        var result;
+
         try {
             // setup the gateway instance
             // The user will now be able to create connections to the fabric network and be able to
@@ -232,7 +223,121 @@ module.exports = class User {
             // signed by this user using the credentials stored in the wallet.
             await gateway.connect(ccp, {
                 wallet,
-                identity: 'admin',
+                identity: "admin",
+                discovery: { enabled: true, asLocalhost: true } // using asLocalhost as this gateway is using a fabric network deployed locally
+            });
+
+            // Build a network instance based on the channel where the smart contract is deployed
+            const network = await gateway.getNetwork(channelName);
+
+            // Get the contract from the network.
+            const contract = network.getContract(chaincodeName);
+
+            // Initialize a set of asset data on the channel using the chaincode 'InitLedger' function.
+            // This type of transaction would only be run once by an application the first time it was started after it
+            // deployed the first time. Any updates to the chaincode deployed later would likely not need to run
+            // an "init" type function.
+            winston.debug(
+                '\n--> Evaluate Transaction: ViewToken, function views token on the ledger'
+            );
+            var result = await contract.evaluateTransaction('ViewToken', tokenId);
+            winston.debug('*** Result: '+ result.toString());
+        } finally {
+            // Disconnect from the gateway when the application is closing
+            // This will close all connections to the network
+            gateway.disconnect();
+        }
+    }
+
+    async viewAllTokensForUser(userId){
+
+        var orgName = "Org1"
+
+        const ccp = require('../application-files/javascript/AppUtil.js')[`buildCCP${orgName}`]()
+
+        // build an instance of the fabric ca services client based on
+        // the information in the network configuration
+        const caClient = buildCAClient(FabricCAServices, ccp, 'ca.'+ orgName.toLowerCase() +'.example.com');
+
+        // setup the wallet to hold the credentials of the application user
+        const wallet = await buildWallet(Wallets, path.join(walletPath,'../','wallets' ,orgName));
+
+        // in a real application this would be done on an administrative flow, and only once
+        // await enrollAdmin(caClient, wallet, mspOrg1);
+
+        // // in a real application this would be done only when a new user was required to be added
+        // // and would be part of an administrative flow
+        // await registerAndEnrollUser(caClient, wallet, mspOrg1, org1UserId, 'org1.department1');
+
+        // Create a new gateway instance for interacting with the fabric network.
+        // In a real application this would be done as the backend server session is setup for
+        // a user that has been verified.
+        const gateway = new Gateway();
+
+        try {
+            // setup the gateway instance
+            // The user will now be able to create connections to the fabric network and be able to
+            // submit transactions and query. All transactions submitted by this gateway will be
+            // signed by this user using the credentials stored in the wallet.
+            await gateway.connect(ccp, {
+                wallet,
+                identity: "admin",
+                discovery: { enabled: true, asLocalhost: true } // using asLocalhost as this gateway is using a fabric network deployed locally
+            });
+
+            // Build a network instance based on the channel where the smart contract is deployed
+            const network = await gateway.getNetwork(channelName);
+
+            // Get the contract from the network.
+            const contract = network.getContract(chaincodeName);
+
+            // Initialize a set of asset data on the channel using the chaincode 'InitLedger' function.
+            // This type of transaction would only be run once by an application the first time it was started after it
+            // deployed the first time. Any updates to the chaincode deployed later would likely not need to run
+            // an "init" type function.
+            winston.debug(
+                '\n--> Evaluate Transaction: ViewToken, function views token on the ledger'
+            );
+            var result = await contract.evaluateTransaction('GetAllTokens', userId);
+            winston.debug('*** Result: '+ result.toString());
+        } finally {
+            // Disconnect from the gateway when the application is closing
+            // This will close all connections to the network
+            gateway.disconnect();
+        }
+
+    }
+
+    async tranferToken(tokenDetails,orgName) {
+        const ccp = require('../application-files/javascript/AppUtil.js')[`buildCCP${orgName}`]()
+
+        // build an instance of the fabric ca services client based on
+        // the information in the network configuration
+        const caClient = buildCAClient(FabricCAServices, ccp, 'ca.'+ orgName.toLowerCase() +'.example.com');
+
+        // setup the wallet to hold the credentials of the application user
+        const wallet = await buildWallet(Wallets, path.join(walletPath,'../','wallets' ,orgName));
+
+        // in a real application this would be done on an administrative flow, and only once
+        // await enrollAdmin(caClient, wallet, mspOrg1);
+
+        // // in a real application this would be done only when a new user was required to be added
+        // // and would be part of an administrative flow
+        // await registerAndEnrollUser(caClient, wallet, mspOrg1, org1UserId, 'org1.department1');
+
+        // Create a new gateway instance for interacting with the fabric network.
+        // In a real application this would be done as the backend server session is setup for
+        // a user that has been verified.
+        const gateway = new Gateway();
+
+        try {
+            // setup the gateway instance
+            // The user will now be able to create connections to the fabric network and be able to
+            // submit transactions and query. All transactions submitted by this gateway will be
+            // signed by this user using the credentials stored in the wallet.
+            await gateway.connect(ccp, {
+                wallet,
+                identity: "admin",
                 discovery: { enabled: true, asLocalhost: true } // using asLocalhost as this gateway is using a fabric network deployed locally
             });
 
@@ -250,7 +355,7 @@ module.exports = class User {
                 '\n--> Submit Transaction: TransferToken, function creates transfer of token on the ledger'
             );
 
-            result = await contract.submitTransaction(
+            await contract.submitTransaction(
                 'TransferToken',
                 tokenDetails.TokenId,
                 tokenDetails.ReceiverAddress,
@@ -262,7 +367,6 @@ module.exports = class User {
             // This will close all connections to the network
             gateway.disconnect();
         }
-        return JSON.parse(result.toString());
     }
     // async exchangeTokens() {}
 };
