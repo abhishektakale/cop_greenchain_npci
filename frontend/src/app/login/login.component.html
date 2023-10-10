@@ -15,10 +15,10 @@
                     <mat-form-field appearance="outline">
                         <mat-label>Organization</mat-label>
                         <mat-select formControlName="organization" matNativeControl required>
-                            <mat-option value="govt">Govt. Of India</mat-option>
-                            <mat-option value="npci">NPCI</mat-option>
-                            <mat-option value="reliance">Reliance</mat-option>
-                            <mat-option value="adani">Adani</mat-option>
+                            <mat-option value="Org1">Govt. Of India</mat-option>
+                            <mat-option value="Org2">NPCI</mat-option>
+                            <mat-option value="Bank3">Reliance</mat-option>
+                            <mat-option value="Bank4">Adani</mat-option>
                         </mat-select>
                         <mat-error *ngIf="loginForm.get('organization')?.hasError('required')">Organization is required</mat-error>
                     </mat-form-field>
@@ -30,3 +30,4 @@
         </form>
     </div>
 </div>
+

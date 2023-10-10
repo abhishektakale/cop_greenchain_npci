@@ -2,6 +2,8 @@
     <div class="col-2 header-img">
       <img style="padding: 30px" height="250" width="300" src="assets/govt_logo.jpg" />
       <img height="250" width="250" src="assets/NPCI_Logo.png" />
+      <label class="user-id" >Hello, {{userId}}</label>
+      <button mat-raised-button color="primary" class="wallet-btn" (click)="showWalletBalanceDialog()">Wallet Balance</button>
     </div>
     <div class="col-10">
       <div class="layout">

@@ -23,6 +23,7 @@ import { TradeComponent } from './trade/trade.component';
 import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
 import { MatCardModule } from '@angular/material/card';
+import { WalletBalanceDialogComponent } from './wallet-balance-dialog/wallet-balance-dialog.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { MatCardModule } from '@angular/material/card';
     IssuanceComponent,
     TradeComponent,
     HomeComponent,
-    LoginComponent
+    LoginComponent,
+    WalletBalanceDialogComponent
   ],
   imports: [
     BrowserModule, MatDatepickerModule, MatNativeDateModule, MatSelectModule,

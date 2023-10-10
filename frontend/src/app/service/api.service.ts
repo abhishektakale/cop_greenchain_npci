@@ -16,19 +16,23 @@ export class ApiService {
    }
 
   createUser(payload: any) {
-    return this.http.post(`${this.user_url}/createUser`,payload);
+    return this.http.post(`${this.user_url}/createUser`,payload); // orgName, userId
   }
 
-  getUser(organization: string, userId: string) {
-    return this.http.get(`${this.user_url}/viewUser/${organization}/${userId}`);
+  getUser(orgName: string, userId: string) {
+    return this.http.get(`${this.user_url}/viewUser/${orgName}/${userId}`);
+  }
+
+  getAllTokens(userId: string) {
+    return this.http.get(`${this.user_url}/viewAllTokensForUser/${userId}`);
   }
 
   createIssuerAsset(payload: any) {
      return this.http.post(`${this.issuer_url}/createToken`, payload);
   }
 
-  getAsset(organization?: string, tokenId?: string) {
-    return this.http.get(`${this.issuer_url}/viewToken/${organization}/${tokenId}`);
+  getAsset(orgName?: string, tokenId?: string) {
+    return this.http.get(`${this.issuer_url}/viewToken/${orgName}/${tokenId}`);
   }
 
   issueAsset(payload: any) {
@@ -37,9 +41,5 @@ export class ApiService {
 
   tradeAsset(payload: any) {
     return this.http.post(`${this.user_url}/transferToken`, payload);
-  }
-
-  getTradedAsset() {
-    return this.http.get(`${this.user_url}/transferToken`);
   }
 }
