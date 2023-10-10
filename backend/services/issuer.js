@@ -11,7 +11,7 @@ const winston = require('../utils/logger.js');
 const { json } = require('body-parser');
 
 const channelName = 'mychannel';
-const chaincodeName = 'basicFour';
+const chaincodeName = 'basic';
 const mspOrg1 = 'Org1MSP';
 const walletPath = __dirname;
 const org1UserId = 'appUser';
