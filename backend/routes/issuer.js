@@ -5,15 +5,15 @@ var router = express.Router();
 
 router.post('/createToken', function (req, res, next) {
     const issuerService = new Issuer();
-    const {tokenDetails,orgName} = req.body;
-    res.send(issuerService.createToken(tokenDetails,orgName));
+    const { tokenDetails, orgName } = req.body;
+    res.sendPromise(issuerService.createToken(tokenDetails, orgName));
 });
 
 router.post('/issueToken', function (req, res, next) {
     const issuerService = new Issuer();
-    const {tokenDetails,orgName} = req.body;
+    const { tokenDetails, orgName } = req.body;
 
-    res.send(issuerService.issueToken(tokenDetails,orgName));
+    res.sendPromise(issuerService.issueToken(tokenDetails, orgName));
 });
 
 module.exports = router;
