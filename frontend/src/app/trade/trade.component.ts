@@ -22,22 +22,30 @@ export class TradeComponent implements OnInit {
   dummyData = [];
   userId: string;
   orgName: string;
+  allUsers: Array<any> = [];
+  allTokens: Array<any> = [];
+  users: any = [];
   displayedColumns: String[] = ["position", "requestId",'createdOn','lastUpdatedOn','assetType',"securityType" ,'securityName','status','from', 'to', 'amt_to_receive'];
 
   constructor(public commonService: CommonServiceService, private dialog: MatDialog, private apiService: ApiService, private cookieService: CookieService) {
     this.userId = this.cookieService.get('UserId');
     this.orgName = this.cookieService.get('OrgName');
+    this.allUsers = this.commonService.allUsers;
+    this.allTokens = this.commonService.allTokens;
 
   }
 
   ngOnInit(): void {
       this.commonService.tab = 'trade';
+      this.getAllTokens();
+      this.getAllUsers();
   }
 
   getAllTokens() {
+    this.dataSource.data = [];
     this.apiService.getAllTokens(this.userId).subscribe((response: any) => {
-      response.forEach((tokenDetails:any) => {
-      console.log("Get All Tokens ", response);
+      this.commonService.allTokens = response;
+      response.forEach((tokenDetails: any) => {
 
         this.dataSource.data.push({
           requestId: tokenDetails.TokenId,
@@ -56,7 +64,6 @@ export class TradeComponent implements OnInit {
       console.log("Error in Get All Tokens ", error);
     })
   }
-
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
@@ -72,24 +79,16 @@ export class TradeComponent implements OnInit {
         this.dataSource.data.push(result)
         this.dataSource._updateChangeSubscription();
       }
-      let payload = {
-        orgName: this.orgName,
-      }
-/*       this.dataSource.data.push({
-        requestId: 'REQ_TRA_GB_001',
-        createdOn: 'October 06, 2023',
-        lastUpdatedOn: 'October 06, 2023',
-        assetType: 'Green Bond',
-        securityType: 'Green Bond',
-        securityName: 'Green Bond 31-10-2023',
-        quantity: 1,
-        status: 'Processed',
-        isin: 'INGB001',
-        to: 'Adani',
-        from: 'Reliance',
-        amt_to_receive: 100
-      }) */
+      this.getAllTokens();
       this.dataSource._updateChangeSubscription();
     });
    }
+
+   getAllUsers() {
+    this.apiService.getAllUsers().subscribe((response: any) => {
+      this.users = response;
+      this.commonService.allUsers = this.users.filter((user: any) => user.UserName != this.userId);
+      console.log(this.allUsers)
+    })
+  }
 }

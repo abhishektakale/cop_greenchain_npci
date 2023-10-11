@@ -13,10 +13,10 @@ export class ApiService {
   constructor(private http: HttpClient, private commonService: CommonServiceService) {
     this.user_url = this.commonService.user_url;
     this.issuer_url = this.commonService.issuer_url;
-   }
+  }
 
   createUser(payload: any) {
-    return this.http.post(`${this.user_url}/createUser`,payload); // orgName, userId
+    return this.http.post(`${this.user_url}/createUser`, payload); // orgName, userId
   }
 
   getUser(orgName: string, userId: string) {
@@ -28,7 +28,7 @@ export class ApiService {
   }
 
   createIssuerAsset(payload: any) {
-     return this.http.post(`${this.issuer_url}/createToken`, payload);
+    return this.http.post(`${this.issuer_url}/createToken`, payload);
   }
 
   getAsset(orgName?: string, tokenId?: string) {
@@ -41,5 +41,9 @@ export class ApiService {
 
   tradeAsset(payload: any) {
     return this.http.post(`${this.user_url}/transferToken`, payload);
+  }
+
+  getAllUsers() {
+    return this.http.get(`${this.user_url}/viewAllUsers`);
   }
 }

@@ -88,7 +88,7 @@ module.exports = class Issuer {
             gateway.disconnect();
         }
 
-        return JSON.parse(result.toString());
+        return result.toString();
     }
 
     async issueToken(tokenDetails,orgName) {
@@ -112,6 +112,7 @@ module.exports = class Issuer {
         // In a real application this would be done as the backend server session is setup for
         // a user that has been verified.
         const gateway = new Gateway();
+        var result;
 
         try {
             // setup the gateway instance
@@ -137,7 +138,7 @@ module.exports = class Issuer {
             winston.debug(
                 '\n--> Submit Transaction: IssueToken, function issues token on the ledger'
             );
-
+                result = 
             await contract.submitTransaction(
                 'IssueToken',
                 tokenDetails.TokenId,
@@ -150,6 +151,6 @@ module.exports = class Issuer {
             gateway.disconnect();
         }
 
-        return JSON.parse(result.toString());
+        return result.toString();
     }
 };

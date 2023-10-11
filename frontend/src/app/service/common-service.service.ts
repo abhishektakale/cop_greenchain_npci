@@ -9,6 +9,8 @@ export class CommonServiceService {
   user_url: string = 'http://localhost:3000/app/user';
   issuer_url: string = 'http://localhost:3000/app/issuer';
   userWalletDetails: any;
+  allUsers: Array<any> = [];
+  allTokens: Array<any> = [];
 
   constructor() { }
 }

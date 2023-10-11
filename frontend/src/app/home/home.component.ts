@@ -42,6 +42,8 @@ export class HomeComponent {
     'status',
     'isin',
   ];
+  users: any = [];
+  allUsers: any;
   constructor(
     private _http: HttpClient,
     private dialog: MatDialog,
@@ -57,23 +59,22 @@ export class HomeComponent {
         'Access-Control-Allow-Origin': '*',
       }),
     };
-    this._http.get<any>(URLS.LIST, this.httpOptions).subscribe((data) => {
-      this.dataSource.data = data;
-    });
 
     this.userId = this.cookieService.get('UserId');
     this.orgName = this.cookieService.get('OrgName');
   }
   ngOnInit() {
     this.commonService.tab = 'issuer';
-   // this.getAsset();
-   this.getAllTokens();
+    // this.getAsset();
+    this.getAllTokens();
+    this.getAllUsers();
   }
 
   getAllTokens() {
+    this.dataSource.data = [];
     this.apiService.getAllTokens(this.userId).subscribe((response: any) => {
-      response.forEach((tokenDetails:any) => {
-      console.log("Get All Tokens ", response);
+      this.commonService.allTokens = response;
+      response.forEach((tokenDetails: any) => {
 
         this.dataSource.data.push({
           requestId: tokenDetails.TokenId,
@@ -106,35 +107,7 @@ export class HomeComponent {
         // this.dataSource.data.push(result)
         this.dataSource._updateChangeSubscription();
       }
-      if (this.commonService.tab === 'issuer') {
-        console.log("ISSUER")
-        this.getAllTokens();
-        this.dataSource.data.push({
-/*           requestId: 'REQ_CRE_GB_001',
-          createdOn: 'October 06, 2023',
-          lastUpdatedOn: 'October 06, 2023',
-          assetType: 'Green Bond',
-          securityType: 'Green Bond',
-          securityName: 'Green Bond 31-10-2023',
-          quantity: 1,
-          status: 'Processed',
-          isin: 'INGB001', */
-        });
-      } else if (this.commonService.tab === 'issuance') {
-        this.getAllTokens();
-/*         this.dataSource.data.push({
-          requestId: 'REQ_ISU_GB_001',
-          createdOn: 'October 06, 2023',
-          lastUpdatedOn: 'October 06, 2023',
-          assetType: 'Green Bond',
-          securityType: 'Green Bond',
-          securityName: 'Green Bond 31-10-2023',
-          quantity: 1,
-          status: 'Processed',
-          isin: 'INGB001',
-          issuedTo: 'Reliance',
-        }); */
-      }
+      this.getAllTokens();
       this.dataSource._updateChangeSubscription();
     });
   }
@@ -159,7 +132,7 @@ export class HomeComponent {
 
     this.getAllTokens();
 
-   // this.dataSource.data = [];
+    // this.dataSource.data = [];
   }
 
   createNewAsset() {
@@ -193,13 +166,21 @@ export class HomeComponent {
     this.apiService.getUser(this.orgName, this.userId).subscribe((response) => {
       this.commonService.userWalletDetails = response;
       console.log(response);
+      const dialogRef = this.dialog.open(WalletBalanceDialogComponent, {
+        width: '500px',
+        height: '50vh',
+        position: { top: '150px' },
+      });
     }, (error) => {
       console.log("Error in fetching user info ", error);
     });
-    const dialogRef = this.dialog.open(WalletBalanceDialogComponent, {
-      width: '500px',
-      height: '50vh',
-      position: { top: '150px' },
-    });
+  }
+
+  getAllUsers() {
+    this.apiService.getAllUsers().subscribe((response: any) => {
+      this.users = response;
+      this.commonService.allUsers = this.users.filter((user: any) => user.UserName != this.userId);
+      console.log(this.allUsers)
+    })
   }
 }

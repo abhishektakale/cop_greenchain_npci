@@ -191,6 +191,7 @@ module.exports = class User {
             // This will close all connections to the network
             gateway.disconnect();
         }
+        return JSON.parse(result.toString());
 
     }
 
@@ -273,7 +274,7 @@ module.exports = class User {
         // In a real application this would be done as the backend server session is setup for
         // a user that has been verified.
         const gateway = new Gateway();
-
+        var result
         try {
             // setup the gateway instance
             // The user will now be able to create connections to the fabric network and be able to
@@ -298,13 +299,14 @@ module.exports = class User {
             winston.debug(
                 '\n--> Evaluate Transaction: ViewToken, function views token on the ledger'
             );
-            var result = await contract.evaluateTransaction('GetAllTokens', userId);
-            winston.debug('*** Result: '+ result.toString());
+            result = await contract.evaluateTransaction('GetAllTokens', userId);
+            winston.debug('*** GetAllTokens Result: '+ result.toString());
         } finally {
             // Disconnect from the gateway when the application is closing
             // This will close all connections to the network
             gateway.disconnect();
         }
+        return JSON.parse(result.toString());
 
     }
 
@@ -329,6 +331,7 @@ module.exports = class User {
         // In a real application this would be done as the backend server session is setup for
         // a user that has been verified.
         const gateway = new Gateway();
+        var result;
 
         try {
             // setup the gateway instance
@@ -355,7 +358,7 @@ module.exports = class User {
                 '\n--> Submit Transaction: TransferToken, function creates transfer of token on the ledger'
             );
 
-            await contract.submitTransaction(
+            result = await contract.submitTransaction(
                 'TransferToken',
                 tokenDetails.TokenId,
                 tokenDetails.ReceiverAddress,
@@ -367,6 +370,7 @@ module.exports = class User {
             // This will close all connections to the network
             gateway.disconnect();
         }
+        return result.toString();
     }
     // async exchangeTokens() {}
 };

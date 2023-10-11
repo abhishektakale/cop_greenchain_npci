@@ -1,89 +1,94 @@
 <span class="material-icons" (click)="close()" style="float: right;">
-    <mat-icon>highlight_off</mat-icon>
-  </span>
-  <div style="margin: 20px;">
-      <div style="font-size: 1.5em; text-align: center;  margin-bottom: 15px;">{{commonService.tab === 'issuer' ? 'Asset Creation' : commonService.tab === 'issuance' ? 'Asset Issuance' : 'Trade Asset'}}</div>
-      <form (ngSubmit)="onSubmit()">
-        <div fxLayout="column" fxLayoutAlign="space-around">
-          <div class="row">
-            <div class="col-sm-12 ">
-              <mat-form-field *ngIf="commonService.tab == 'issuer'" appearance="outline">
-                <mat-label>Security Type</mat-label>
-                <mat-select [formControl]="form.controls['SecurityType']" matNativeControl required>
-                  <mat-option value="green_bond">Green Bond</mat-option>
-                  <mat-option value="carbon_credit">Carbon Credit</mat-option>
-                </mat-select>
-              </mat-form-field>
-              <mat-form-field *ngIf="commonService.tab == 'issuance' || commonService.tab == 'trade'" appearance="outline">
-                <mat-label>Entity To Issue</mat-label>
-                <mat-select [formControl]="form.controls['Entity']" matNativeControl required>
-                  <mat-option *ngIf="commonService.tab != 'trade'" value="entity_A">Reliance</mat-option>
-                  <mat-option value="entity_B">Adani</mat-option>
-                </mat-select>
-              </mat-form-field>
-              <small *ngIf="form.controls['SecurityType'].hasError('required') && form.controls['SecurityType'].touched"
-                class="mat-text-warn">You must include Security Type</small>
-            </div>
-            <div class="col-sm-12 ">
-              <mat-form-field *ngIf="commonService.tab == 'issuer'" appearance="outline">
-                <mat-label>Expiry</mat-label>
-                <input [formControl]="form.controls['Expiry']" matInput [matDatepicker]="picker">
-                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                <mat-datepicker #picker></mat-datepicker>
-              </mat-form-field>
-                <small *ngIf="form.controls['Expiry'].hasError('required') && form.controls['Expiry'].touched"
-                  class="mat-text-warn">You must include Expiry</small>
-              </div>
-              <div class="col-sm-12 ">
-                <mat-form-field *ngIf="commonService.tab == 'issuer'" appearance="outline">
-                  <mat-label>Security Name</mat-label>
-                  <input matInput type="text" required [formControl]="form.controls['SecurityName']" [(ngModel)]="aseet.SecurityName">
-                </mat-form-field>
-                <mat-form-field *ngIf="commonService.tab == 'issuance' || commonService.tab == 'trade'" appearance="outline" matNativeControl required>
-                  <mat-label>Security Name</mat-label>
-                  <mat-select [formControl]="form.controls['SecurityName']">
-                    <mat-option value="security_name_1">Green Bond 31-10-2023</mat-option>
-                  </mat-select>
-                </mat-form-field>
-                <small *ngIf="form.controls['SecurityName'].hasError('required') && form.controls['SecurityName'].touched"
-                  class="mat-text-warn">You must include Security Name</small>
-              </div>
-              <div class="col-sm-12" *ngIf="commonService.tab === 'trade' && form.controls['SecurityName'].value != ''">
-                <mat-form-field appearance="outline">
-                  <mat-label>Market Value</mat-label>
-                  <input matInput type="text" required [formControl]="form.controls['MarketValue']" [value]="100" [disabled]="true">
-                </mat-form-field>
-              </div>
-              <div class="col-sm-12 " *ngIf="commonService.tab == 'issuer'" >
-                <mat-form-field appearance="outline">
-                  <mat-label>ISIN</mat-label>
-                  <input matInput type="text" required [formControl]="form.controls['ISIN']" [(ngModel)]="aseet.ISIN">
-                </mat-form-field>
-                <small *ngIf="form.controls['ISIN'].hasError('required') && form.controls['ISIN'].touched"
-                  class="mat-text-warn">You must include Security Name</small>
-              </div>
-              <div class="col-sm-12 " *ngIf="commonService.tab == 'issuer'">
-                <mat-form-field appearance="outline" class="face-value-form-field">
-                  <mat-label>Face Value</mat-label>
-                  <input matInput type="number" required [formControl]="form.controls['FaceValue']" [(ngModel)]="aseet.FaceValue">
-                </mat-form-field>
-                <mat-form-field appearance="outline" class="currency-form-field">
-                  <mat-label>Currency</mat-label>
-                  <select matNativeControl required>
-                    <option value="inr">INR</option>
-                  </select>
-                </mat-form-field>
-                <small *ngIf="form.controls['FaceValue'].hasError('required') && form.controls['FaceValue'].touched"
-                  class="mat-text-warn">You must include appraisedValue</small>
-              </div>
-          </div>
-     
-         
+  <mat-icon>highlight_off</mat-icon>
+</span>
+<div style="margin: 20px;">
+  <div style="font-size: 1.5em; text-align: center;  margin-bottom: 15px;">{{commonService.tab === 'issuer' ? 'Asset
+    Creation' : commonService.tab === 'issuance' ? 'Asset Issuance' : 'Trade Asset'}}</div>
+  <form (ngSubmit)="onSubmit()">
+    <div fxLayout="column" fxLayoutAlign="space-around">
+      <div class="row">
+        <div class="col-sm-12 ">
+          <mat-form-field *ngIf="commonService.tab == 'issuer'" appearance="outline">
+            <mat-label>Security Type</mat-label>
+            <mat-select [formControl]="form.controls['SecurityType']" matNativeControl required>
+              <mat-option value="green_bond">Green Bond</mat-option>
+              <mat-option value="carbon_credit">Carbon Credit</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field *ngIf="commonService.tab == 'issuance' || commonService.tab == 'trade'" appearance="outline">
+            <mat-label>Entity To Issue</mat-label>
+            <mat-select [formControl]="form.controls['Entity']" matNativeControl required>
+              <mat-option *ngFor="let user of allUsers" value={{user.UserName}}>{{user.UserName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <small *ngIf="form.controls['SecurityType'].hasError('required') && form.controls['SecurityType'].touched"
+            class="mat-text-warn">You must include Security Type</small>
         </div>
-        <div style="text-align: center;">
-          <button mat-raised-button color="primary"  type="submit" [disabled]="!form.valid"
-            style="margin-top:10px;">{{commonService.tab == 'issuer' ? 'Create Asset': commonService.tab === 'issuance' ? 'Issue Asset' : 'Trade Asset'}}</button>
-        
+        <div class="col-sm-12 ">
+          <mat-form-field *ngIf="commonService.tab == 'issuer'" appearance="outline">
+            <mat-label>Expiry</mat-label>
+            <input [formControl]="form.controls['Expiry']" matInput [matDatepicker]="picker">
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+          <small *ngIf="form.controls['Expiry'].hasError('required') && form.controls['Expiry'].touched"
+            class="mat-text-warn">You must include Expiry</small>
+        </div>
+        <div class="col-sm-12 ">
+          <mat-form-field *ngIf="commonService.tab == 'issuer'" appearance="outline">
+            <mat-label>Security Name</mat-label>
+            <input matInput type="text" required [formControl]="form.controls['SecurityName']"
+              [(ngModel)]="aseet.SecurityName">
+          </mat-form-field>
+          <mat-form-field *ngIf="commonService.tab == 'issuance' || commonService.tab == 'trade'" appearance="outline"
+            matNativeControl required>
+            <mat-label>Security Name</mat-label>
+            <mat-select [formControl]="form.controls['SecurityName']" (selectionChange)="onSecurityNameChange($event)">
+              <mat-option *ngFor="let token of allTokens" value="{{token.TokenId}}">{{token.SecurityName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <small *ngIf="form.controls['SecurityName'].hasError('required') && form.controls['SecurityName'].touched"
+            class="mat-text-warn">You must include Security Name</small>
+        </div>
+        <div class="col-sm-12" *ngIf="commonService.tab === 'trade' && form.controls['SecurityName'].value != ''">
+          <mat-form-field appearance="outline">
+            <mat-label>Market Value</mat-label>
+            <input matInput type="text" required [formControl]="form.controls['MarketValue']" [value]="100" rreadOnly
+              [disabled]="true">
+          </mat-form-field>
+        </div>
+        <div class="col-sm-12 " *ngIf="commonService.tab == 'issuer'">
+          <mat-form-field appearance="outline">
+            <mat-label>ISIN</mat-label>
+            <input matInput type="text" required [formControl]="form.controls['ISIN']" [(ngModel)]="aseet.ISIN">
+          </mat-form-field>
+          <small *ngIf="form.controls['ISIN'].hasError('required') && form.controls['ISIN'].touched"
+            class="mat-text-warn">You must include ISIN</small>
+        </div>
+        <div class="col-sm-12 " *ngIf="commonService.tab == 'issuer'">
+          <mat-form-field appearance="outline" class="face-value-form-field">
+            <mat-label>Face Value</mat-label>
+            <input matInput type="number" required [formControl]="form.controls['FaceValue']"
+              [(ngModel)]="aseet.FaceValue">
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="currency-form-field">
+            <mat-label>Currency</mat-label>
+            <select matNativeControl required>
+              <option value="inr">INR</option>
+            </select>
+          </mat-form-field>
+          <small *ngIf="form.controls['FaceValue'].hasError('required') && form.controls['FaceValue'].touched"
+            class="mat-text-warn">You must include appraisedValue</small>
+        </div>
       </div>
-      </form>
-  </div>
+
+
+    </div>
+    <div style="text-align: center;">
+      <button mat-raised-button color="primary" type="submit" [disabled]="!form.valid"
+        style="margin-top:10px;">{{commonService.tab == 'issuer' ? 'Create Asset': commonService.tab === 'issuance' ?
+        'Issue Asset' : 'Trade Asset'}}</button>
+
+    </div>
+  </form>
+</div>

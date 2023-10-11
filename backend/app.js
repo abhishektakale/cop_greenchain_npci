@@ -35,7 +35,6 @@ const promisify = (req, res, next) => {
                 res.send(result);
             })
             .catch((err) => {
-                winston.error(err);
                 res.status(400);
                 res.send(err);
             });

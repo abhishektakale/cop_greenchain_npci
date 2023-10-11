@@ -23,12 +23,12 @@ router.get('/viewToken/:orgName/:tokenId', function (req, res, next) {
 router.get('/viewAllTokensForUser/:userId', function (req, res, next) {
     const userService = new User();
     const { userId } = req.params;
-    res.send(userService.viewAllTokensForUser(userId));
+    res.sendPromise(userService.viewAllTokensForUser(userId));
 });
 
 router.get('/viewAllUsers', function (req, res, next) {
     const userService = new User();
-    res.send(userService.viewAllUsers());
+    res.sendPromise(userService.viewAllUsers());
 });
 
 router.post('/transferToken', function (req, res, next) {
